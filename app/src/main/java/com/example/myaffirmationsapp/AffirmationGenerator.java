@@ -21,6 +21,8 @@ public class AffirmationGenerator {
 
     private static List<Affirmation> userDefinedAffirmations = new ArrayList<>();
 
+
+
     public static void addUserDefinedAffirmation(String text, int imageId) {
         userDefinedAffirmations.add(0, new Affirmation(text, imageId));
     }
