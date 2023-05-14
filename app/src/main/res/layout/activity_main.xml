@@ -46,6 +46,7 @@
                 android:text="Affirmation of the Day"
                 android:textSize="24sp" />
 
+
             <TextView
                 android:id="@+id/affirmation_text_view"
                 android:layout_width="wrap_content"
@@ -55,6 +56,16 @@
                 android:textAlignment="center"
                 android:text="I am worthy and deserving of love and respect."
                 android:textSize="18sp" />
+            <TextView
+                android:id="@+id/affirmationText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp" />
+
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"

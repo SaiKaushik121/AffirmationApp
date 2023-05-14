@@ -57,6 +57,7 @@ public void loadAffirmationAndImage() {
 }
 
 
+
     private AffirmationGenerator.Affirmation getRandomAffirmation(List<String> userAffirmations, List<AffirmationGenerator.Affirmation> defaultAffirmations) {
         List<AffirmationGenerator.Affirmation> allAffirmations = new ArrayList<>();
 
