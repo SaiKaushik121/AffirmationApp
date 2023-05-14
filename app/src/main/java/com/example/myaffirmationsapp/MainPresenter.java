@@ -27,15 +27,12 @@ public class MainPresenter implements MainContract.Presenter {
     @Override
     public void loadAffirmationAndImage() {
         List<AffirmationGenerator.Affirmation> affirmations = model.getAllAffirmations(context);
-        int size = affirmations.size();
-        if (size > 0) {
-            int randomIndex = (int) (Math.random() * size);
-            AffirmationGenerator.Affirmation affirmation = affirmations.get(randomIndex);
+        if (!affirmations.isEmpty()) {
+            AffirmationGenerator.Affirmation affirmation = affirmations.get((int) (Math.random() * affirmations.size()));
             view.displayAffirmation(affirmation);
-        } else {
-            view.displayErrorMessage("No affirmations found");
         }
     }
+
 
     private AffirmationGenerator.Affirmation getRandomAffirmation(List<String> userAffirmations, List<AffirmationGenerator.Affirmation> defaultAffirmations) {
         List<AffirmationGenerator.Affirmation> allAffirmations = new ArrayList<>();
@@ -57,21 +54,18 @@ public class MainPresenter implements MainContract.Presenter {
         List<String> userAffirmations = getUserAffirmations(); // Get user-defined affirmations
         List<AffirmationGenerator.Affirmation> defaultAffirmations = model.getAllAffirmations(context); // Get default affirmations
 
-        if (position == 0) {
-            // "Affirmation of the day" button is clicked
-            AffirmationGenerator.Affirmation randomAffirmation = getRandomAffirmation(userAffirmations, defaultAffirmations);
-            view.displayAffirmation(randomAffirmation);
-        } else if (position <= userAffirmations.size()) {
+        if (position < userAffirmations.size()) {
             // User-defined affirmation is selected
-            String selectedAffirmation = userAffirmations.get(position - 1);
+            String selectedAffirmation = userAffirmations.get(position);
             view.displayAffirmation(new AffirmationGenerator.Affirmation(selectedAffirmation, R.drawable.user_defined_image));
-        } else if (position <= userAffirmations.size() + defaultAffirmations.size()) {
+        } else if (position < userAffirmations.size() + defaultAffirmations.size()) {
             // Default affirmation is selected
-            int defaultPosition = position - userAffirmations.size() - 1;
+            int defaultPosition = position - userAffirmations.size();
             AffirmationGenerator.Affirmation selectedAffirmation = defaultAffirmations.get(defaultPosition);
             view.displayAffirmation(selectedAffirmation);
         }
     }
+
 
     public void saveUserAffirmation(String text) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
