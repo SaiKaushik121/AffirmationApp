@@ -26,14 +26,35 @@ public class MainPresenter implements MainContract.Presenter {
         this.context = context;
     }
 
-    @Override
-    public void loadAffirmationAndImage() {
-        List<AffirmationGenerator.Affirmation> affirmations = model.getAllAffirmations(context);
-        if (!affirmations.isEmpty()) {
-            AffirmationGenerator.Affirmation affirmation = affirmations.get((int) (Math.random() * affirmations.size()));
-            view.displayAffirmation(affirmation);
-        }
+//    @Override
+//    public void loadAffirmationAndImage() {
+//        List<AffirmationGenerator.Affirmation> affirmations = model.getAllAffirmations(context);
+//        if (!affirmations.isEmpty()) {
+//            AffirmationGenerator.Affirmation affirmation = affirmations.get((int) (Math.random() * affirmations.size()));
+//            view.displayAffirmation(affirmation);
+//        }
+//    }
+@Override
+public void loadAffirmationAndImage() {
+    List<String> userAffirmations = dbHelper.getUserAffirmations(); // Get user-defined affirmations
+    List<AffirmationGenerator.Affirmation> defaultAffirmations = model.getAllAffirmations(context); // Get default affirmations
+
+    if (!userAffirmations.isEmpty()) {
+        // User-defined affirmations available
+        String selectedAffirmation = userAffirmations.get((int) (Math.random() * userAffirmations.size()));
+        view.displayAffirmation(new AffirmationGenerator.Affirmation(selectedAffirmation, R.drawable.user_defined_image));
+        return;
     }
+
+    if (!defaultAffirmations.isEmpty()) {
+        // Default affirmations available
+        AffirmationGenerator.Affirmation selectedAffirmation = defaultAffirmations.get((int) (Math.random() * defaultAffirmations.size()));
+        view.displayAffirmation(selectedAffirmation);
+    } else {
+        // No affirmations available
+        view.displayAffirmation(null);
+    }
+}
 
 
     private AffirmationGenerator.Affirmation getRandomAffirmation(List<String> userAffirmations, List<AffirmationGenerator.Affirmation> defaultAffirmations) {
@@ -64,30 +85,27 @@ public class MainPresenter implements MainContract.Presenter {
         List<AffirmationGenerator.Affirmation> defaultAffirmations = model.getAllAffirmations(context); // Get default affirmations
 
         if (!userAffirmations.isEmpty()) {
-            // User-defined affirmations exist
+            // User-defined affirmations available
             if (position < userAffirmations.size()) {
                 // User-defined affirmation is selected
                 String selectedAffirmation = userAffirmations.get(position);
                 view.displayAffirmation(new AffirmationGenerator.Affirmation(selectedAffirmation, R.drawable.user_defined_image));
+                return;
             } else {
-                // Default affirmation is selected
-                int defaultPosition = position - userAffirmations.size();
-                AffirmationGenerator.Affirmation selectedAffirmation = defaultAffirmations.get(defaultPosition);
-                view.displayAffirmation(selectedAffirmation);
-            }
-        } else {
-            // No user-defined affirmations, display only default affirmations
-            if (!defaultAffirmations.isEmpty()) {
-                int defaultPosition = position % defaultAffirmations.size();
-                AffirmationGenerator.Affirmation selectedAffirmation = defaultAffirmations.get(defaultPosition);
-                view.displayAffirmation(selectedAffirmation);
-            } else {
-                // No affirmations available
-                view.displayAffirmation(null);
+                // Adjust position to account for user-defined affirmations
+                position -= userAffirmations.size();
             }
         }
-    }
 
+        // Default affirmations
+        if (position < defaultAffirmations.size()) {
+            AffirmationGenerator.Affirmation selectedAffirmation = defaultAffirmations.get(position);
+            view.displayAffirmation(selectedAffirmation);
+        } else {
+            // No affirmation available
+            view.displayAffirmation(null);
+        }
+    }
 
 
     public void saveUserAffirmation(String text) {
