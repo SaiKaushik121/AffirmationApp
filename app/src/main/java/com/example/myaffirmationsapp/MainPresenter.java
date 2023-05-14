@@ -4,8 +4,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import com.example.myaffirmationsapp.AffirmationDbHelper;
+import com.example.myaffirmationsapp.AffirmationGenerator;
+import com.example.myaffirmationsapp.MainContract;
 
-import com.example.myaffirmationsapp.AffirmationGenerator.Affirmation;
 
 
 import java.util.ArrayList;
@@ -51,7 +53,8 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void selectAffirmation(int position) {
-        List<String> userAffirmations = getUserAffirmations(); // Get user-defined affirmations
+        AffirmationDbHelper dbHelper = new AffirmationDbHelper(context);
+        List<String> userAffirmations = dbHelper.getUserAffirmations(); // Get user-defined affirmations
         List<AffirmationGenerator.Affirmation> defaultAffirmations = model.getAllAffirmations(context); // Get default affirmations
 
         if (position < userAffirmations.size()) {
@@ -63,8 +66,15 @@ public class MainPresenter implements MainContract.Presenter {
             int defaultPosition = position - userAffirmations.size();
             AffirmationGenerator.Affirmation selectedAffirmation = defaultAffirmations.get(defaultPosition);
             view.displayAffirmation(selectedAffirmation);
+        } else {
+            // No affirmation available
+            view.displayAffirmation(null);
         }
+
+        userAffirmations = dbHelper.getUserAffirmations();
     }
+
+
 
 
     public void saveUserAffirmation(String text) {

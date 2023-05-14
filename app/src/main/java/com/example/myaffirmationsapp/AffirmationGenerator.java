@@ -33,39 +33,26 @@ public class AffirmationGenerator {
         userDefinedAffirmations.add(0, new Affirmation(text, imageId));
     }
 
-    public static List<Affirmation> getAllAffirmations(Context context) {
-        // Retrieve user-defined affirmations from the database
-        AffirmationDbHelper dbHelper = new AffirmationDbHelper(context);
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String[] projection = {
-                AffirmationDbHelper.AffirmationContract.COLUMN_NAME_TEXT,
-                AffirmationDbHelper.AffirmationContract.COLUMN_NAME_IMAGE
-        };
-        Cursor cursor = db.query(
-                AffirmationDbHelper.AffirmationContract.TABLE_NAME,
-                projection,
-                null,
-                null,
-                null,
-                null,
-                null
-        );
-        userDefinedAffirmations.clear();
-        while (cursor.moveToNext()) {
-            String text = cursor.getString(cursor.getColumnIndexOrThrow(AffirmationDbHelper.AffirmationContract.COLUMN_NAME_TEXT));
-            int imageId = cursor.getInt(cursor.getColumnIndexOrThrow(AffirmationDbHelper.AffirmationContract.COLUMN_NAME_IMAGE));
-            userDefinedAffirmations.add(new Affirmation(text, imageId));
+    public List<Affirmation> getAllAffirmations(Context context) {
+        List<Affirmation> affirmations = new ArrayList<>();
+
+        // Get pre-defined affirmations
+        String[] preDefinedAffirmations = context.getResources().getStringArray(R.array.affirmations);
+        for (String affirmationText : preDefinedAffirmations) {
+            Affirmation affirmation = new Affirmation(affirmationText, R.drawable.background);
+            affirmations.add(affirmation);
         }
-        cursor.close();
-        db.close();
-        dbHelper.close();
 
-        List<Affirmation> allAffirmations = new ArrayList<>();
-        allAffirmations.addAll(userDefinedAffirmations);
-        allAffirmations.addAll(defaultAffirmations);
+        // Get user-defined affirmations
+        List<String> userAffirmations = AffirmationDbHelper.getInstance(context).getUserAffirmations();
+        for (String affirmationText : userAffirmations) {
+            Affirmation affirmation = new Affirmation(affirmationText, R.drawable.user_defined_image);
+            affirmations.add(affirmation);
+        }
 
-        return allAffirmations;
+        return affirmations;
     }
+
 
     public static class Affirmation {
         private String text;

@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Affirmations</string>
+
+    <string name="affirmations">
+    I am strong.
+    I am capable.
+    I am worthy.
+</string>
+
+    <string name="user_affirmations">
+</string>
 </resources>

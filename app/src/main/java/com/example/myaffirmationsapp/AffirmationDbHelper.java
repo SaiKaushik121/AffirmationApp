@@ -1,7 +1,11 @@
 package com.example.myaffirmationsapp;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AffirmationDbHelper extends SQLiteOpenHelper {
 
@@ -43,5 +47,26 @@ public class AffirmationDbHelper extends SQLiteOpenHelper {
 
         private static final String SQL_DELETE_ENTRIES =
                 "DROP TABLE IF EXISTS " + TABLE_NAME;
+    }
+    public List<String> getUserAffirmations() {
+        SQLiteDatabase db = getReadableDatabase();
+        String[] projection = {AffirmationContract.COLUMN_NAME_TEXT};
+        String sortOrder = AffirmationContract.COLUMN_NAME_TEXT + " ASC";
+        Cursor cursor = db.query(
+                AffirmationContract.TABLE_NAME,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                sortOrder
+        );
+        List<String> userAffirmations = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            String affirmation = cursor.getString(cursor.getColumnIndexOrThrow(AffirmationContract.COLUMN_NAME_TEXT));
+            userAffirmations.add(affirmation);
+        }
+        cursor.close();
+        return userAffirmations;
     }
 }
