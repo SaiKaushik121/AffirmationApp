@@ -7,6 +7,14 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
+
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class AffirmationGenerator {
 
     private static List<Affirmation> defaultAffirmations = new ArrayList<Affirmation>() {{
@@ -20,8 +28,6 @@ public class AffirmationGenerator {
     }};
 
     private static List<Affirmation> userDefinedAffirmations = new ArrayList<>();
-
-
 
     public static void addUserDefinedAffirmation(String text, int imageId) {
         userDefinedAffirmations.add(0, new Affirmation(text, imageId));
@@ -57,6 +63,7 @@ public class AffirmationGenerator {
         List<Affirmation> allAffirmations = new ArrayList<>();
         allAffirmations.addAll(userDefinedAffirmations);
         allAffirmations.addAll(defaultAffirmations);
+
         return allAffirmations;
     }
 
@@ -86,3 +93,4 @@ public class AffirmationGenerator {
         }
     }
 }
+

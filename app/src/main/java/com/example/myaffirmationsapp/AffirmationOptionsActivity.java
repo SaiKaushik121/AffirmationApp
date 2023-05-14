@@ -33,5 +33,7 @@ public class AffirmationOptionsActivity extends AppCompatActivity {
         });
 
 
+
+
     }
 }

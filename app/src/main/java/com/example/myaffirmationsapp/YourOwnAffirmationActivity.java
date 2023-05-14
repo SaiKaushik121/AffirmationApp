@@ -72,6 +72,7 @@ public class YourOwnAffirmationActivity extends AppCompatActivity {
         ImageView selectedImageView = findViewById(R.id.image_view_selected_image);
         Drawable selectedImageDrawable = selectedImageView.getDrawable();
 
+
         // Check if affirmation text is empty
         if (affirmationText.isEmpty()) {
             Toast.makeText(this, "Please enter an affirmation", Toast.LENGTH_SHORT).show();
@@ -86,6 +87,8 @@ public class YourOwnAffirmationActivity extends AppCompatActivity {
 
         // Get the URI of the selected image
         Uri selectedImageUri = getImageUri(this, ((BitmapDrawable) selectedImageDrawable).getBitmap());
+        int selectedImageId = getResources().getIdentifier(selectedImageUri.toString(), null, getPackageName());
+
 
         // Save the affirmation text and selected image URI to the database using SQLite
         AffirmationDbHelper dbHelper = new AffirmationDbHelper(this);
@@ -93,7 +96,7 @@ public class YourOwnAffirmationActivity extends AppCompatActivity {
 
         ContentValues values = new ContentValues();
         values.put(AffirmationDbHelper.AffirmationContract.COLUMN_NAME_TEXT, affirmationText);
-        values.put(AffirmationDbHelper.AffirmationContract.COLUMN_NAME_IMAGE, selectedImageUri.toString());
+        values.put(AffirmationDbHelper.AffirmationContract.COLUMN_NAME_IMAGE, selectedImageId);
 
         long newRowId = db.insert(AffirmationDbHelper.AffirmationContract.TABLE_NAME, null, values);
 

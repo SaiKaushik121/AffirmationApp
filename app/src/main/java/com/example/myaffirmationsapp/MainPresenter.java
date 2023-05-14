@@ -5,10 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.myaffirmationsapp.AffirmationDbHelper;
-import com.example.myaffirmationsapp.AffirmationGenerator;
-import com.example.myaffirmationsapp.MainContract;
-import com.example.myaffirmationsapp.R;
+import com.example.myaffirmationsapp.AffirmationGenerator.Affirmation;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +29,25 @@ public class MainPresenter implements MainContract.Presenter {
         List<AffirmationGenerator.Affirmation> affirmations = model.getAllAffirmations(context);
         AffirmationGenerator.Affirmation affirmation = affirmations.get((int) (Math.random() * affirmations.size()));
         view.displayAffirmation(affirmation);
+    }
+
+    @Override
+    public void selectAffirmation(int position)
+    {
+        List<String> userAffirmations = getUserAffirmations(); // Get user-defined affirmations
+        List<AffirmationGenerator.Affirmation> defaultAffirmations = model.getAllAffirmations(context); // Get default affirmations
+
+        if (position < userAffirmations.size()) {
+            // User-defined affirmation is selected
+            String selectedAffirmation = userAffirmations.get(position);
+            view.displayAffirmation(new AffirmationGenerator.Affirmation(selectedAffirmation, R.drawable.user_defined_image));
+        } else if (position < userAffirmations.size() + defaultAffirmations.size()) {
+            // Default affirmation is selected
+            int defaultPosition = position - userAffirmations.size();
+            AffirmationGenerator.Affirmation selectedAffirmation = defaultAffirmations.get(defaultPosition);
+            view.displayAffirmation(selectedAffirmation);
+        }
+
     }
 
     public void saveUserAffirmation(String text) {
@@ -67,4 +84,5 @@ public class MainPresenter implements MainContract.Presenter {
         cursor.close();
         return userAffirmations;
     }
+
 }

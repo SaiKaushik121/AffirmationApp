@@ -12,15 +12,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AffirmationAdapter extends RecyclerView.Adapter<AffirmationAdapter.ViewHolder> {
+    private final OnAffirmationClickListener clickListener;
     private List<AffirmationGenerator.Affirmation> affirmationList;
     private Context context;
 
-    public AffirmationAdapter(List<AffirmationGenerator.Affirmation> affirmationList, Context context) {
-        this.affirmationList = affirmationList;
+
+
+    public AffirmationAdapter(Context context) {
+        this.affirmationList = new ArrayList<>();
         this.context = context;
+        this.clickListener = null;
     }
 
     @NonNull
@@ -28,6 +33,11 @@ public class AffirmationAdapter extends RecyclerView.Adapter<AffirmationAdapter.
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.affirmation_item, parent, false);
         return new ViewHolder(view);
+    }
+
+    public void setAffirmations(List<AffirmationGenerator.Affirmation> affirmations) {
+        this.affirmationList = affirmations;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -52,5 +62,8 @@ public class AffirmationAdapter extends RecyclerView.Adapter<AffirmationAdapter.
             affirmationImageView = view.findViewById(R.id.affirmation_image_view);
         }
     }
-}
+    public interface OnAffirmationClickListener {
+        void onAffirmationClick(int position);
+    }
 
+}
