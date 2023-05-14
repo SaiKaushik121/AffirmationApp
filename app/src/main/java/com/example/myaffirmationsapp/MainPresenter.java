@@ -39,41 +39,54 @@ public class MainPresenter implements MainContract.Presenter {
     private AffirmationGenerator.Affirmation getRandomAffirmation(List<String> userAffirmations, List<AffirmationGenerator.Affirmation> defaultAffirmations) {
         List<AffirmationGenerator.Affirmation> allAffirmations = new ArrayList<>();
 
+        // Add user-defined affirmations
         for (String userAffirmation : userAffirmations) {
             AffirmationGenerator.Affirmation affirmation = new AffirmationGenerator.Affirmation(userAffirmation, R.drawable.user_defined_image);
             allAffirmations.add(affirmation);
         }
 
+        // Add default affirmations
         allAffirmations.addAll(defaultAffirmations);
 
-        int randomIndex = (int) (Math.random() * allAffirmations.size());
-        return allAffirmations.get(randomIndex);
+        // Select a random affirmation
+        if (!allAffirmations.isEmpty()) {
+            int randomIndex = (int) (Math.random() * allAffirmations.size());
+            return allAffirmations.get(randomIndex);
+        } else {
+            return null; // No affirmations available
+        }
     }
 
 
     @Override
     public void selectAffirmation(int position) {
-        AffirmationDbHelper dbHelper = new AffirmationDbHelper(context);
-        List<String> userAffirmations = dbHelper.getUserAffirmations(); // Get user-defined affirmations
+        List<String> userAffirmations = new AffirmationDbHelper(context).getUserAffirmations(); // Get user-defined affirmations
         List<AffirmationGenerator.Affirmation> defaultAffirmations = model.getAllAffirmations(context); // Get default affirmations
 
-        if (position < userAffirmations.size()) {
-            // User-defined affirmation is selected
-            String selectedAffirmation = userAffirmations.get(position);
-            view.displayAffirmation(new AffirmationGenerator.Affirmation(selectedAffirmation, R.drawable.user_defined_image));
-        } else if (position < userAffirmations.size() + defaultAffirmations.size()) {
-            // Default affirmation is selected
-            int defaultPosition = position - userAffirmations.size();
-            AffirmationGenerator.Affirmation selectedAffirmation = defaultAffirmations.get(defaultPosition);
-            view.displayAffirmation(selectedAffirmation);
+        if (!userAffirmations.isEmpty()) {
+            // User-defined affirmations exist
+            if (position < userAffirmations.size()) {
+                // User-defined affirmation is selected
+                String selectedAffirmation = userAffirmations.get(position);
+                view.displayAffirmation(new AffirmationGenerator.Affirmation(selectedAffirmation, R.drawable.user_defined_image));
+            } else {
+                // Default affirmation is selected
+                int defaultPosition = position - userAffirmations.size();
+                AffirmationGenerator.Affirmation selectedAffirmation = defaultAffirmations.get(defaultPosition);
+                view.displayAffirmation(selectedAffirmation);
+            }
         } else {
-            // No affirmation available
-            view.displayAffirmation(null);
+            // No user-defined affirmations, display only default affirmations
+            if (!defaultAffirmations.isEmpty()) {
+                int defaultPosition = position % defaultAffirmations.size();
+                AffirmationGenerator.Affirmation selectedAffirmation = defaultAffirmations.get(defaultPosition);
+                view.displayAffirmation(selectedAffirmation);
+            } else {
+                // No affirmations available
+                view.displayAffirmation(null);
+            }
         }
-
-        userAffirmations = dbHelper.getUserAffirmations();
     }
-
 
 
 
