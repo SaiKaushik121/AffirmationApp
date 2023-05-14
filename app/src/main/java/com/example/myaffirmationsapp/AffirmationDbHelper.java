@@ -11,6 +11,14 @@ public class AffirmationDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "affirmations.db";
     private static final int DATABASE_VERSION = 1;
+    private static AffirmationDbHelper instance;
+
+    public static synchronized AffirmationDbHelper getInstance(Context context) {
+        if (instance == null) {
+            instance = new AffirmationDbHelper(context.getApplicationContext());
+        }
+        return instance;
+    }
 
     public AffirmationDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
