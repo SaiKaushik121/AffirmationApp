@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         adapter = new AffirmationAdapter(this);
         recyclerView.setAdapter(adapter);
 
-        presenter = new MainPresenter(this, getApplicationContext());
+        presenter = new MainPresenter(this, this);
         presenter.loadAffirmationAndImage();
     }
 
